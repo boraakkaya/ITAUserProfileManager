@@ -10,7 +10,6 @@ namespace ITAUserProfileManager
     {
        public List<ITATermGroup> ITATermGroupList { get; set; }
     }
-
     public class ITATermGroup
     {
         public Guid Id { get; set; }
@@ -27,6 +26,5 @@ namespace ITAUserProfileManager
     {
         public Guid Id { get; set; }
         public String Name { get; set; }
-    }
-        
+    }        
 }

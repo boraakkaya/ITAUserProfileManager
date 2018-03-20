@@ -37,7 +37,6 @@ namespace ITAUserProfileManager
                     using (var clientContext = helper.GetClientContext(ConfigurationManager.AppSettings["tenantURL"], authenticationToken))
                     {
                         PeopleManager peopleManager = new PeopleManager(clientContext);
-                        //PersonProperties personProperties = peopleManager.GetPropertiesFor(account);
                         clientContext.Load(peopleManager);
                         if(data.jobTitle != null && data.jobTitle!="")
                         {
@@ -138,8 +137,7 @@ namespace ITAUserProfileManager
                         {
                             string mailingAddress = data.mailingAddress.addressLine1 + "#;" + data.mailingAddress.addressLine2 + "#;" + data.mailingAddress.city + "#;" + data.mailingAddress.state + "#;" + data.mailingAddress.zipCode + "#;" + data.mailingAddress.country;
                             peopleManager.SetSingleValueProfileProperty(account, "MailingAddress", mailingAddress);
-                        }
-                        
+                        }                        
                         clientContext.ExecuteQuery();
                         log.Info("First Name : " + data.firstName + data.lastName);
                         var response = req.CreateResponse(HttpStatusCode.OK);
