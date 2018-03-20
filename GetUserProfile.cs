@@ -11,7 +11,6 @@ using System.Text;
 using System.Net.Http.Headers;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
-using System.Configuration;
 using System.Collections.Specialized;
 using Microsoft.SharePoint.Client.UserProfiles;
 using Newtonsoft.Json;
@@ -28,7 +27,7 @@ namespace ITAUserProfileManager
         /// <AppPermissionRequest Scope = "http://sharepoint/content/sitecollection" Right="FullControl" />
         /// </AppPermissionRequests>
         ///  *****************************************************
-        /// sample account i:0#.f|membership|bora@itadev.onmicrosoft.com
+        /// sample account i:0#.f|membership|bora@tenant.onmicrosoft.com
         [FunctionName("GetUserProfile")]
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log)
         {
@@ -155,25 +154,16 @@ namespace ITAUserProfileManager
                         }
                         profile.directReports = directReports;
 
-                        string output = JsonConvert.SerializeObject(profile);
-
-                        //var userProfileObject = "{";
-                        //foreach (var item in personProperties.UserProfileProperties)
-                        //{
-                        //    userProfileObject += string.Format("\"{0}\" : \"{1}\" xxxxxxxxx  ", item.Key, item.Value);
-                        //}
-                        //userProfileObject += "}";
+                        string output = JsonConvert.SerializeObject(profile);                        
                         var response = req.CreateResponse(HttpStatusCode.OK);
                         response.Content = new StringContent(output, Encoding.UTF8, "application/json");
-                        return response;
-                        //return req.CreateResponse(HttpStatusCode.OK, userProfileObject);
+                        return response;                       
                     }
                 }
                 catch(Exception ex)
                 {
                     return req.CreateResponse(HttpStatusCode.OK, ex.Message);
-                    //response.Content = new StringContent(ex.Message, Encoding.UTF8, "application/json");
-                    //return response;
+                   
                 }
             }
             else

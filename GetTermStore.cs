@@ -29,7 +29,6 @@ namespace ITAUserProfileManager
             log.Info("C# HTTP trigger function processed a request.");
             log.Info(ConfigurationManager.AppSettings["clientID"]);
             string authenticationToken = await helper.getSharePointToken(log);
-
             try
             {
                 using (var clientContext = helper.GetClientContext(ConfigurationManager.AppSettings["tenantURL"], authenticationToken))
@@ -40,19 +39,14 @@ namespace ITAUserProfileManager
                     clientContext.Load(termStore, store => store.Name, store => store.Groups.Where(g => g.IsSystemGroup == false && g.IsSiteCollectionGroup == false).Include(group => group.Id, group => group.Name, group => group.Description, group => group.IsSiteCollectionGroup, group => group.IsSystemGroup, group => group.TermSets.Include(termSet => termSet.Id, termSet => termSet.Name, termSet => termSet.Description, termSet => termSet.CustomProperties, termSet => termSet.Terms.Include(t => t.Id, t => t.Description, t => t.Name, t => t.IsDeprecated, t => t.Parent, t => t.Labels, t => t.LocalCustomProperties, t => t.IsSourceTerm, t => t.IsRoot, t => t.IsKeyword))));
 
                     clientContext.ExecuteQuery();
-
-
                     ITATermStore itaTermStore = new ITATermStore();
-                    itaTermStore.ITATermGroupList = new List<ITATermGroup>();
-                                        
+                    itaTermStore.ITATermGroupList = new List<ITATermGroup>();                                        
                     TermGroupCollection allGroups = termStore.Groups;
-                    log.Info("Total Groups "+allGroups.Count.ToString());
-                    
+                    log.Info("Total Groups "+allGroups.Count.ToString());                  
                     
                     foreach (var termGroup in allGroups)
                     {
-                        log.Info("Group Name " + termGroup.Name);
-                        
+                        log.Info("Group Name " + termGroup.Name);                        
                         ITATermGroup grp = new ITATermGroup();
                         grp.Id = termGroup.Id;
                         grp.Name = termGroup.Name != null ? termGroup.Name : "";
@@ -78,8 +72,7 @@ namespace ITAUserProfileManager
                             grp.TermSets.Add(itaTermSet);
                         }
                         itaTermStore.ITATermGroupList.Add(grp);
-                    }
-                    
+                    }                   
                     
                     string output = JsonConvert.SerializeObject(itaTermStore);
                     var response = req.CreateResponse(HttpStatusCode.OK);
