@@ -42,7 +42,7 @@ namespace ITAUserProfileManager
             dynamic data = await req.Content.ReadAsAsync<object>();
             
             account = account ?? data?.account;
-            string authenticationToken = await helper.getSharePointToken(log);            
+            string authenticationToken = await helper.getSharePointToken(log, ConfigurationManager.AppSettings["tenantURL"]);            
             if (account != null)
             {
                 try

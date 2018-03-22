@@ -21,12 +21,15 @@ namespace ITAUserProfileManager
     {
         public Guid Id { get; set; }
         public String Name { get; set; }
+        public String Type { get; set; }
+        public List<ITATermProperty> CustomProps { get; set; }
         public List<ITATerms> Terms { get; set; }
     }
     public class ITATerms
     {
         public Guid Id { get; set; }
         public String Name { get; set; }
+        public String Type { get; set; }
         public List<ITATerms> Terms { get; set; }
         public List<string> Labels { get; set; }
         public List<ITATermProperty> CustomProps { get; set; }

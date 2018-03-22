@@ -28,7 +28,7 @@ namespace ITAUserProfileManager
         {
             log.Info("C# HTTP trigger function processed a request.");
             log.Info(ConfigurationManager.AppSettings["clientID"]);
-            string authenticationToken = await helper.getSharePointToken(log);
+            string authenticationToken = await helper.getSharePointToken(log, ConfigurationManager.AppSettings["tenantURL"]);
             try
             {
                 using (var clientContext = helper.GetClientContext(ConfigurationManager.AppSettings["tenantURL"], authenticationToken))
@@ -36,7 +36,7 @@ namespace ITAUserProfileManager
                     TaxonomySession taxonomySession = TaxonomySession.GetTaxonomySession(clientContext);
                     //taxonomySession.UpdateCache();
                     TermStore termStore = taxonomySession.GetDefaultSiteCollectionTermStore();
-                    clientContext.Load(termStore, store => store.Name, store => store.Groups.Where(g => g.IsSystemGroup == false && g.IsSiteCollectionGroup == false).Include(group => group.Id, group => group.Name, group => group.Description, group => group.IsSiteCollectionGroup, group => group.IsSystemGroup, group => group.TermSets.Include(termSet => termSet.Id, termSet => termSet.Name, termSet => termSet.Description, termSet => termSet.CustomProperties, termSet => termSet.Terms.Include(t => t.Id, t => t.Description, t => t.Name, t => t.IsDeprecated,t => t.Parent, t => t.Labels, t => t.LocalCustomProperties, t => t.IsSourceTerm, t => t.IsRoot, t => t.IsKeyword, t=>t.TermsCount, t=>t.CustomProperties,
+                    clientContext.Load(termStore, store => store.Name, store => store.Groups.Where(g => g.IsSystemGroup == false && g.IsSiteCollectionGroup == false).Include(group => group.Id, group => group.Name, group => group.Description, group => group.IsSiteCollectionGroup, group => group.IsSystemGroup, group => group.TermSets.Include(termSet => termSet.Id, termSet => termSet.Name, termSet => termSet.Description, termSet => termSet.CustomProperties,termSet => termSet.Terms.Include(t => t.Id, t => t.Description, t => t.Name, t => t.IsDeprecated,t => t.Parent, t => t.Labels, t => t.LocalCustomProperties, t => t.IsSourceTerm, t => t.IsRoot, t => t.IsKeyword, t=>t.TermsCount, t=>t.CustomProperties,
                         t => t.Terms.Include(t1 => t1.Id, t1 => t1.Description, t1 => t1.Name, t1 => t1.IsDeprecated, t1 => t1.Parent, t1 => t1.Labels, t1 => t1.LocalCustomProperties, t1 => t1.IsSourceTerm, t1 => t1.IsRoot, t1 => t1.IsKeyword, t1 => t1.TermsCount, t1 => t1.CustomProperties,
                         t1 => t1.Terms.Include(t2 => t2.Id, t2 => t2.Description, t2 => t2.Name, t2 => t2.IsDeprecated, t2 => t2.Parent, t2 => t2.Labels, t2 => t2.LocalCustomProperties, t2 => t2.IsSourceTerm, t2 => t2.IsRoot, t2 => t2.IsKeyword, t2 => t2.TermsCount, t2 => t2.CustomProperties,
                         t2 => t2.Terms.Include(t3 => t3.Id, t3 => t3.Description, t3 => t3.Name, t3 => t3.IsDeprecated, t3 => t3.Parent, t3 => t3.Labels, t3 => t3.LocalCustomProperties, t3 => t3.IsSourceTerm, t3 => t3.IsRoot, t3 => t3.IsKeyword, t3 => t3.TermsCount, t3 => t3.CustomProperties)))
@@ -62,7 +62,17 @@ namespace ITAUserProfileManager
                             ITATermSets itaTermSet = new ITATermSets();
                             itaTermSet.Id = termSet.Id != null ? termSet.Id : new Guid();
                             itaTermSet.Name = termSet.Name != null ? termSet.Name : "";
+                            itaTermSet.Type = termSet.GetType().ToString();
 
+                            if(termSet.CustomProperties !=null)
+                            {
+                                itaTermSet.CustomProps = new List<ITATermProperty>();
+                                foreach(var customProps in termSet.CustomProperties)
+                                {
+                                    itaTermSet.CustomProps.Add(new ITATermProperty() { key = customProps.Key, value = customProps.Value });
+                                }
+                            }
+                            
                             itaTermSet.Terms = new List<ITATerms>();
                             //TermSet specific logic goes here
                             foreach (var term in termSet.Terms)
@@ -71,7 +81,8 @@ namespace ITAUserProfileManager
                                 ITATerms itaTerm = new ITATerms();
                                 itaTerm.Name = term.Name != null ? term.Name : "";
                                 itaTerm.Id = term.Id !=null ? term.Id : new Guid();
-
+                                //Microsoft.SharePoint.Client.Publishing.Navigation.NavigationTerm abc = term;
+                                itaTerm.Type = term.GetType().ToString();
                                 if (term.Labels.Count > 0)
                                 {
                                     itaTerm.Labels = new List<string>();
@@ -123,8 +134,9 @@ namespace ITAUserProfileManager
                     ITATerms itaTerm = new ITATerms();
                     itaTerm.Name = term.Name != null ? term.Name : "";
                     itaTerm.Id = term.Id != null ? term.Id : new Guid();
-                    
-                    if(term.Labels.Count >0)
+                    itaTerm.Type = term.GetType().ToString();
+
+                    if (term.Labels.Count >0)
                     {
                         itaTerm.Labels = new List<string>();
                         foreach(var label in term.Labels)

@@ -29,7 +29,7 @@ namespace ITAUserProfileManager
                 .Value;
             // Get request body
             UserProfile data = await req.Content.ReadAsAsync<UserProfile>();
-            string authenticationToken = await helper.getSharePointToken(log);
+            string authenticationToken = await helper.getSharePointToken(log, ConfigurationManager.AppSettings["tenantURL"]);
             if (account != null)
             {
                 try

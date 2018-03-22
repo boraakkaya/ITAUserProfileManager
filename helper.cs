@@ -31,14 +31,14 @@ namespace ITAUserProfileManager
             };
             return ctx;
         }
-        public static async Task<string> getSharePointToken(TraceWriter log)
+        public static async Task<string> getSharePointToken(TraceWriter log,string siteUrl)
         {
             HttpClient client = new HttpClient();
             KeyValuePair<string, string>[] body = new KeyValuePair<string, string>[]
             {
         new KeyValuePair<string, string>("grant_type", "client_credentials"),
         new KeyValuePair<string, string>("client_id", $"{clientID}@{tenantID}"),
-        new KeyValuePair<string, string>("resource", $"{spPrinciple}/{tenantURL}@{tenantID}".Replace("https://", "")),
+        new KeyValuePair<string, string>("resource", $"{spPrinciple}/{siteUrl}@{tenantID}".Replace("https://", "")),
         new KeyValuePair<string, string>("client_secret", clientSecret)
             };
             var content = new FormUrlEncodedContent(body);
