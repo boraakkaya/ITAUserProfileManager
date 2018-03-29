@@ -34,6 +34,7 @@ namespace ITAUserProfileManager
         public List<Education> education { get; set; }
         public List<Certification> certifications { get; set; }
         public List<User> directReports { get; set; }
+        public string taxonomyDepartment { get; set; }
     }
     class MailingAddress
     {

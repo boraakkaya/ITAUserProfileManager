@@ -63,6 +63,11 @@ namespace ITAUserProfileManager
 
                         profile.jobTitle = personProperties.UserProfileProperties["Title"].ToString();
                         profile.department = personProperties.UserProfileProperties["Department"].ToString();
+
+                        if(personProperties.UserProfileProperties["TaxonomyDepartment"] != null)
+                        {
+                            profile.taxonomyDepartment = personProperties.UserProfileProperties["TaxonomyDepartment"].ToString();
+                        }
                         profile.cellPhone = personProperties.UserProfileProperties["CellPhone"].ToString();
                         profile.emailAddress = personProperties.UserProfileProperties["WorkEmail"].ToString();
                         profile.officeRegion = "OfficeRegion";//personProperties.UserProfileProperties["OfficeRegion"].ToString();

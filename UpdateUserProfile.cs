@@ -58,8 +58,11 @@ namespace ITAUserProfileManager
                         {
                             peopleManager.SetSingleValueProfileProperty(account, "Department", data.department);
                         }
-
-                        if(!string.IsNullOrEmpty(data.officeNumber))
+                        if (data.taxonomyDepartment != null && data.taxonomyDepartment != "")
+                        {
+                            peopleManager.SetSingleValueProfileProperty(account, "TaxonomyDepartment", data.taxonomyDepartment);
+                        }
+                        if (!string.IsNullOrEmpty(data.officeNumber))
                         {
                             peopleManager.SetSingleValueProfileProperty(account, "OfficeNumber", data.officeNumber);
                         }
