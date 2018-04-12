@@ -42,7 +42,7 @@ namespace ITAUserProfileManager
                     {
                         foreach(var termSet in group.TermSets)
                         {
-                            if(termSet.Name == "Navigation Terms")
+                            if(termSet.Name == "Offices")
                             {                                
                                 List<ITANavigationItem> navigation = new List<ITANavigationItem>();                                
                                 navigationTermset = NavigationTermSet.GetAsResolvedByWeb(clientContext, termSet, clientContext.Web, "GlobalNavigationTaxonomyProvider");
@@ -58,13 +58,13 @@ namespace ITAUserProfileManager
                                     {
                                         title = navTerm.Title.Value,
                                         link = navTerm.SimpleLinkUrl,
-                                        visible = true,
-                                        target = "_blank",
+                                        //visible = true,
+                                        //target = "_blank",
                                         children = getChildTerms(navTerm, clientContext)
                                         
                                     });                                    
                                 }
-                                getStaticLinks(itaNavigation, accessToken);
+                                //getStaticLinks(itaNavigation, accessToken);
                                 itaNavigation.navigation = navigation;
                             }
                         }
@@ -93,77 +93,77 @@ namespace ITAUserProfileManager
                 {
                     title = navTerm.Title.Value,
                     link = navTerm.SimpleLinkUrl,
-                    visible = true,
-                    target = "_blank",
+                    //visible = true,
+                    //target = "_blank",
                     children = getChildTerms(navTerm,clientContext)
                 });
             }
             return children;
         }
-        public static void getStaticLinks(ITANavigation itaNavigation, string accessToken)
-        {
+        //public static void getStaticLinks(ITANavigation itaNavigation, string accessToken)
+        //{
             
-            using (var ctx = helper.GetClientContext("https://itadev.sharepoint.com/", accessToken))
-            {
-                var web = ctx.Web;
-                ctx.Load(web);
-                ctx.ExecuteQuery();
-                string webTitle = web.Title;
-                var list = web.Lists.GetByTitle("Mega Menu");
-                ctx.Load(list);
-                ctx.ExecuteQuery();
-                string listTitle = list.Title;
-                ListItemCollection collection = list.GetItems(new CamlQuery()
-                {
-                    ViewXml = @"<View><OrderBy><FieldRef Name='Title'/></OrderBy></View>"
-                });
-                ctx.Load(collection);
-                ctx.ExecuteQuery();
-                List<ITAStaticLink> staticLinks = new List<ITAStaticLink>();
-                foreach(ListItem listItem in collection)
-                {
+        //    using (var ctx = helper.GetClientContext("https://itadev.sharepoint.com/", accessToken))
+        //    {
+        //        var web = ctx.Web;
+        //        ctx.Load(web);
+        //        ctx.ExecuteQuery();
+        //        string webTitle = web.Title;
+        //        var list = web.Lists.GetByTitle("Mega Menu");
+        //        ctx.Load(list);
+        //        ctx.ExecuteQuery();
+        //        string listTitle = list.Title;
+        //        ListItemCollection collection = list.GetItems(new CamlQuery()
+        //        {
+        //            ViewXml = @"<View><OrderBy><FieldRef Name='Title'/></OrderBy></View>"
+        //        });
+        //        ctx.Load(collection);
+        //        ctx.ExecuteQuery();
+        //        List<ITAStaticLink> staticLinks = new List<ITAStaticLink>();
+        //        foreach(ListItem listItem in collection)
+        //        {
 
-                    var exists  = staticLinks.Find(a => a.owner == listItem["Owner"].ToString());
+        //            var exists  = staticLinks.Find(a => a.owner == listItem["Owner"].ToString());
 
-                    if (exists != null)
-                    {
-                        var headingexists = exists.headings.Find(x => x.title == listItem["Heading"].ToString());
-                        if(headingexists != null)
-                        {
-                            headingexists.links.Add(new ITANavigationItem()
-                            {
-                                title = listItem["Title"].ToString(),
-                                link = listItem["Link"].ToString()
-                            });
-                        }
-                        else
-                        {
-                            exists.headings.Add( new ITAStaticLinkHeading() {
-                                title = listItem["Heading"].ToString(),
-                                links = new List<ITANavigationItem> { new ITANavigationItem() {
-                                    title =  listItem["Title"].ToString(),
-                                    link = listItem["Link"].ToString()
-                                    }}});
-                        }
-                    }
-                    else
-                    {
-                        staticLinks.Add(new ITAStaticLink()
-                        {
-                            owner = listItem["Owner"].ToString(),
-                            headings = new List<ITAStaticLinkHeading> { new ITAStaticLinkHeading() {
-                                title = listItem["Heading"].ToString(),
-                                links = new List<ITANavigationItem> { new ITANavigationItem() {
-                                    title =  listItem["Title"].ToString(),
-                                    link = listItem["Link"].ToString()
-                                    }
-                                }
-                            } }
-                        });
-                    }
-                }
-                itaNavigation.staticLinks = staticLinks;
-            }
-        }
+        //            if (exists != null)
+        //            {
+        //                var headingexists = exists.headings.Find(x => x.title == listItem["Heading"].ToString());
+        //                if(headingexists != null)
+        //                {
+        //                    headingexists.links.Add(new ITANavigationItem()
+        //                    {
+        //                        title = listItem["Title"].ToString(),
+        //                        link = listItem["Link"].ToString()
+        //                    });
+        //                }
+        //                else
+        //                {
+        //                    exists.headings.Add( new ITAStaticLinkHeading() {
+        //                        title = listItem["Heading"].ToString(),
+        //                        links = new List<ITANavigationItem> { new ITANavigationItem() {
+        //                            title =  listItem["Title"].ToString(),
+        //                            link = listItem["Link"].ToString()
+        //                            }}});
+        //                }
+        //            }
+        //            else
+        //            {
+        //                staticLinks.Add(new ITAStaticLink()
+        //                {
+        //                    owner = listItem["Owner"].ToString(),
+        //                    headings = new List<ITAStaticLinkHeading> { new ITAStaticLinkHeading() {
+        //                        title = listItem["Heading"].ToString(),
+        //                        links = new List<ITANavigationItem> { new ITANavigationItem() {
+        //                            title =  listItem["Title"].ToString(),
+        //                            link = listItem["Link"].ToString()
+        //                            }
+        //                        }
+        //                    } }
+        //                });
+        //            }
+        //        }
+        //        itaNavigation.staticLinks = staticLinks;
+        //    }
+        //}
     }
 }
